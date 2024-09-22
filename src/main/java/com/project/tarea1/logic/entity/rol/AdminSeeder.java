@@ -13,13 +13,11 @@ import java.util.Optional;
 public class AdminSeeder implements ApplicationListener<ContextRefreshedEvent> {
     private final RoleRepository roleRepository;
     private final UserRepository userRepository;
-
     private final PasswordEncoder passwordEncoder;
-
 
     public AdminSeeder(
             RoleRepository roleRepository,
-            UserRepository  userRepository,
+            UserRepository userRepository,
             PasswordEncoder passwordEncoder
     ) {
         this.roleRepository = roleRepository;
@@ -33,26 +31,21 @@ public class AdminSeeder implements ApplicationListener<ContextRefreshedEvent> {
     }
 
     private void createSuperAdministrator() {
-        User superAdmin = new User();
-        superAdmin.setName("Super");
-        superAdmin.setLastname("Admin");
-        superAdmin.setEmail("super.admin@gmail.com");
-        superAdmin.setPassword("superadmin123");
-
-        Optional<Role> optionalRole = roleRepository.findByName(RoleEnum.SUPER_ADMIN);
-        Optional<User> optionalUser = userRepository.findByEmail(superAdmin.getEmail());
+        String superAdminEmail = "super.admin@gmail.com";
+        Optional<Role> optionalRole = roleRepository.findByName(RoleEnum.SUPER_ADMIN_ROLE);
+        Optional<User> optionalUser = userRepository.findByEmail(superAdminEmail);
 
         if (optionalRole.isEmpty() || optionalUser.isPresent()) {
             return;
         }
 
-        var user = new User();
-        user.setName(superAdmin.getName());
-        user.setLastname(superAdmin.getLastname());
-        user.setEmail(superAdmin.getEmail());
-        user.setPassword(passwordEncoder.encode(superAdmin.getPassword()));
-        user.setRole(optionalRole.get());
+        User superAdmin = new User();
+        superAdmin.setName("Super");
+        superAdmin.setLastname("Admin");
+        superAdmin.setEmail(superAdminEmail);
+        superAdmin.setPassword(passwordEncoder.encode("superadmin123"));
+        superAdmin.setRole(optionalRole.get());
 
-        userRepository.save(user);
+        userRepository.save(superAdmin);
     }
 }

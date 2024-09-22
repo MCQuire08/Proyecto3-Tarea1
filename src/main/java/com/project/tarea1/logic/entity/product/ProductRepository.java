@@ -1,4 +1,7 @@
 package com.project.tarea1.logic.entity.product;
 
-public class ProductRepository {
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface ProductRepository extends JpaRepository<Product,Long> {
+
 }
